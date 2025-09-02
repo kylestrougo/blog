@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Sign In</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- Hidden username input -->
+        <input type="hidden" id="username" name="username">
+
+        <!-- Circle buttons for username -->
+        <div style="margin-bottom: 20px;">
+            <button type="button" class="user-btn" onclick="setUser('Alice')">Alice</button>
+            <button type="button" class="user-btn" onclick="setUser('Bob')">Bob</button>
+        </div>
+
+        <!-- Password input -->
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+        </p>
+
+        <!-- Submit -->
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <style>
+        .user-btn {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            text-align: center;
+            vertical-align: middle;
+            border: 2px solid #444;
+            background: #f4f4f4;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .user-btn:hover {
+            background: #ddd;
+        }
+    </style>
+
+    <script>
+        function setUser(name) {
+            document.getElementById('username').value = name;
+            // Optionally highlight the selected button
+            document.querySelectorAll('.user-btn').forEach(btn => btn.style.background = '#f4f4f4');
+            event.target.style.background = '#a4d4f4';
+        }
+    </script>
+{% endblock %}
