@@ -2,138 +2,164 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.1, maximum-scale=1.1, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Notebook Blog</title>
-<!-- Import a web font for consistent appearance -->
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --line-height: clamp(28px, 3vw, 44px);
-    --margin-line: clamp(40px, 5vw, 80px);
-  }
+:root{
+  --line-height: clamp(28px, 3vw, 44px);
+  --margin-line: clamp(40px, 5vw, 80px);
+}
 
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    background:#e8eaf0;
-    font-family: 'Comic Neue', cursive;
-    margin:0;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#e8eaf0;
+  font-family: 'Comic Neue', cursive;
+  margin:0;
+}
 
-  .notebook{
-    width:100%;
-    min-height:100vh;
-    background:
-      linear-gradient(90deg, transparent var(--margin-line),
-        rgba(255,98,98,0.15) calc(var(--margin-line) + 2px),
-        transparent calc(var(--margin-line) + 4px)),
-      repeating-linear-gradient(180deg, rgba(0,85,160,0.08),
-        rgba(0,85,160,0.08) 2px,
-        transparent 2px, transparent var(--line-height)),
-      #fdfdfc;
-    padding: clamp(20px, 3vw, 32px) clamp(16px, 2vw, 28px);
-    max-width: 1000px;
-    margin: auto;
-  }
+.notebook{
+  width:100%;
+  min-height:100vh;
+  background:
+    linear-gradient(90deg, transparent var(--margin-line),
+      rgba(255,98,98,0.15) calc(var(--margin-line) + 2px),
+      transparent calc(var(--margin-line) + 4px)),
+    repeating-linear-gradient(180deg, rgba(0,85,160,0.08),
+      rgba(0,85,160,0.08) 2px,
+      transparent 2px, transparent var(--line-height)),
+    #fdfdfc;
+  padding: clamp(20px, 3vw, 32px) clamp(16px, 2vw, 28px);
+  max-width: 1000px;
+  margin: auto;
+}
 
-  .post {
-    margin: clamp(16px, 2vw, 20px) 0;
-    padding-left: calc(var(--margin-line) + 6px);
-    position: relative;
-  }
+/* Center the button horizontally */
+.new-post-btn {
+  display: block;               /* block + margin auto = horizontal center */
+  width: fit-content;           /* shrink to text width */
+  padding: 10px 24px;
+  font-family: 'Comic Neue', cursive;
+  font-size: 16px;
+  color: #555;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 50px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  margin: 0 auto 24px auto;     /* horizontal center + bottom spacing */
+}
 
-  .latest-post {
-    border: 3px solid red;
-    padding: 16px;
-    border-radius: 12px;
-  }
+.new-post-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #ff6262;
+  color: #ff6262;
+}
 
-  .latest-label {
-    position: absolute;
-    top: -10px;
-    left: 0;
-    background: red;
-    color: white;
-    font-weight: bold;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
+.post {
+  margin: clamp(16px, 2vw, 20px) 0;
+  padding-left: calc(var(--margin-line) + 6px);
+  position: relative;
+}
 
+.latest-post {
+  border: 3px solid red;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.latest-label {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  background: red;
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.meta {
+  font-size: clamp(16px, 2.5vw, 24px);
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.handwritten {
+  font-size: clamp(14px, 2vw, 22px);
+  line-height: var(--line-height);
+  margin: 0;
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.post-image {
+  margin: 12px 0;
+  text-align: center;
+}
+
+.post-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Dynamic user colors from Flask/Jinja */
+{% for user, color in user_colors.items() %}
+.user-{{ user|lower }} .meta,
+.user-{{ user|lower }} .handwritten{
+  color: {{ color }};
+}
+{% endfor %}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
   .meta {
-    font-size: clamp(16px, 2.5vw, 24px);
-    margin-bottom: 6px;
-    font-weight: bold;
+    font-size: clamp(18px, 3vw, 26px);
   }
-
   .handwritten {
-    font-size: clamp(14px, 2vw, 22px);
-    line-height: var(--line-height);
-    margin: 0;
-    white-space: pre-wrap;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    font-size: clamp(16px, 2.5vw, 24px);
   }
-
-  /* Mobile-specific zoom */
-  @media (max-width: 768px) {
-    .meta {
-      font-size: clamp(18px, 3vw, 26px);
-    }
-    .handwritten {
-      font-size: clamp(16px, 2.5vw, 24px);
-    }
-    .notebook {
-      padding: clamp(24px, 4vw, 36px) clamp(18px, 3vw, 30px);
-    }
+  .notebook {
+    padding: clamp(24px, 4vw, 36px) clamp(18px, 3vw, 30px);
   }
-
-  /* Dynamic user colors from Flask/Jinja */
-  {% for user, color in user_colors.items() %}
-  .user-{{ user|lower }} .meta,
-  .user-{{ user|lower }} .handwritten{
-    color: {{ color }};
+  .new-post-btn {
+    font-size: 18px;
+    padding: 14px 24px;
   }
-  {% endfor %}
-
-  .post-image {
-    margin: 12px 0;
-    text-align: center;
-  }
-
-  .post-image img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
+}
 </style>
 </head>
 <body>
-        <div>
-            Microblog:
-            <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('post') }}">Post</a>
+
+<div class="notebook">
+  <!-- New post button centered horizontally -->
+  <a href="{{ url_for('post') }}" class="new-post-btn">🖊️New Post</a>
+
+  {% for post in posts %}
+    <article class="post user-{{ post.username|lower }} {% if loop.first %}latest-post{% endif %}">
+      {% if loop.first %}
+        <div class="latest-label">Latest Post</div>
+      {% endif %}
+      <div class="meta">{{ post.username }} — {{ post.date }}</div>
+
+      {% if post.image %}
+        <div class="post-image">
+          <img src="{{ post.image }}" alt="Post image for {{ post.username }}">
         </div>
-  <div class="notebook">
-    {% for post in posts %}
-      <article class="post user-{{ post.username|lower }} {% if loop.first %}latest-post{% endif %}">
-        {% if loop.first %}
-          <div class="latest-label">Latest Post</div>
-        {% endif %}
-        <div class="meta">{{ post.username }} — {{ post.date }}</div>
+      {% endif %}
 
-        {% if post.image %}
-          <div class="post-image">
-            <img src="{{ post.image }}" alt="Post image for {{ post.username }}">
-          </div>
-        {% endif %}
+      <p class="handwritten">{{ post.text }}</p>
+    </article>
+  {% endfor %}
+</div>
 
-        <p class="handwritten">{{ post.text }}</p>
-      </article>
-    {% endfor %}
-  </div>
 </body>
 </html>

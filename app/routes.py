@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 from app import app
-from app.forms import LoginForm
+from app.forms import LoginForm, PostForm
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
@@ -62,18 +62,34 @@ def login():
             return redirect(url_for("login"))
     return render_template("login.html")
 
-
 @app.route('/post', methods=['GET', 'POST'])
 def post():
+    form = PostForm()
     filename = None
+    post_data = None
+
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part'
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file'
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template('post.html', filename=filename)
-    return render_template('post.html', filename=filename)
+        selected_user = request.form.get('selected_user')  # user1 or user2
+        form.username.data = selected_user  # set hidden field
+
+        if form.validate_on_submit():
+            username = form.username.data
+            text = form.text.data
+            file = form.file.data
+            from datetime import datetime
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            if file:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            post_data = {
+                "username": username,
+                "text": text,
+                "filename": filename,
+                "date": current_time
+            }
+
+            return render_template('post.html', form=form, **post_data)
+
+    return render_template('post.html', form=form)
