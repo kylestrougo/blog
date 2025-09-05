@@ -111,6 +111,12 @@
 </style>
 </head>
 <body>
+        <div>
+            Microblog:
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('post') }}">Post</a>
+        </div>
   <div class="notebook">
     {% for post in posts %}
       <article class="post user-{{ post.username|lower }} {% if loop.first %}latest-post{% endif %}">

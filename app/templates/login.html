@@ -1,53 +1,95 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notebook Login</title>
+  <style>
+    /* Prevent width overflow surprises */
+    *, *::before, *::after { box-sizing: border-box; }
 
-{% block content %}
-    <h1>Sign In</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
+    body {
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      min-height: 100dvh;                 /* better on mobile than 100vh */
+      display: grid;
+      place-items: center;                 /* center X & Y */
+      background: url("{{ url_for('static', filename='marble2.jpg') }}") center/cover no-repeat;
+    }
 
-        <!-- Hidden username input -->
-        <input type="hidden" id="username" name="username">
+    .label-box {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 20px;
+      width: min(92vw, 480px);            /* responsive width */
+      padding: clamp(16px, 5vw, 28px);
+      box-shadow: 4px 4px 0 #111;
+    }
 
-        <!-- Circle buttons for username -->
-        <div style="margin-bottom: 20px;">
-            <button type="button" class="user-btn" onclick="setUser('Alice')">Alice</button>
-            <button type="button" class="user-btn" onclick="setUser('Bob')">Bob</button>
-        </div>
+    .label-box h2 {
+      margin: 0 0 1rem 0;
+      text-align: center;
+      font-weight: 700;
+      font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+    }
 
-        <!-- Password input -->
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
+    /* Center the form block and keep it from getting too wide */
+    form {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;                     /* centers the form inside the label */
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-        <!-- Submit -->
-        <p>{{ form.submit() }}</p>
+    label { font-size: 1rem; }
+
+    input[type="password"],
+    button {
+      width: 100%;
+      display: block;
+      padding: 0.8rem;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 16px;                     /* prevents iOS zoom */
+    }
+
+    button {
+      border: none;
+      background: #000;
+      color: #fff;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+    button:hover { background: #444; }
+
+    .flash {
+      margin-top: 1rem;
+      color: red;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Optional: at smaller tablets, let the card breathe a bit more */
+    @media (max-width: 768px) {
+      .label-box { width: min(94vw, 520px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="label-box">
+    <h2>Letters from Bug & Dumbo <3</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+      <label for="password">Enter the password:</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Enter</button>
     </form>
-
-    <style>
-        .user-btn {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            text-align: center;
-            vertical-align: middle;
-            border: 2px solid #444;
-            background: #f4f4f4;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        .user-btn:hover {
-            background: #ddd;
-        }
-    </style>
-
-    <script>
-        function setUser(name) {
-            document.getElementById('username').value = name;
-            // Optionally highlight the selected button
-            document.querySelectorAll('.user-btn').forEach(btn => btn.style.background = '#f4f4f4');
-            event.target.style.background = '#a4d4f4';
-        }
-    </script>
-{% endblock %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+</body>
+</html>
