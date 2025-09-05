@@ -40,7 +40,7 @@ h1 {
   display: inline-block;
   margin-bottom: 12px;
   font-family: 'Comic Neue', cursive;
-  font-size: 20px; /* same as h1 */
+  font-size: 20px;
   text-decoration: none;
   color: #ff6262;
   padding-left: calc(var(--margin-line) + 6px);
@@ -58,12 +58,34 @@ form {
   padding-left: calc(var(--margin-line) + 6px);
 }
 
-textarea, input[type="file"], input[type="submit"] {
+textarea, input[type="file"], input[type="submit"], .username-btn {
   font-family: 'Comic Neue', cursive;
   font-size: 14px;
   padding: 6px 10px;
   border-radius: 8px;
   border:1px solid #ccc;
+  cursor: pointer;
+}
+
+.username-btn {
+  background-color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.username-btn.selected {
+  background-color: #ff6262;
+  color: #fff;
+}
+
+input[type="submit"] {
+  background-color: #ff6262;
+  color: #fff;
+  border: none;
+}
+
+input[type="submit"]:hover, .username-btn:hover {
+  background-color: #e05555;
+  color: #fff;
 }
 
 .uploaded-image {
@@ -89,8 +111,8 @@ textarea, input[type="file"], input[type="submit"] {
   .notebook { padding:20px 12px; }
   h1 { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);}
   .back-button { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);}
-  form { padding-left: calc(var(--margin-line) + 4px);}az
-  textarea, input[type="file"], input[type="submit"] { font-size:16px; padding:8px 12px;}
+  form { padding-left: calc(var(--margin-line) + 4px);}
+  textarea, input[type="file"], input[type="submit"], .username-btn { font-size:16px; padding:8px 12px;}
 }
 </style>
 </head>
@@ -100,17 +122,17 @@ textarea, input[type="file"], input[type="submit"] {
 
     <h1>New Post</h1>
 
-  <form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" id="postForm">
   {{ form.hidden_tag() }}
 
   <div style="margin-bottom: 12px;">
-    <button type="submit" name="selected_user" value="user1" style="margin-right:10px;">user1</button>
-    <button type="submit" name="selected_user" value="user2">user2</button>
+    <button type="button" class="username-btn" data-username="user1">user1</button>
+    <button type="button" class="username-btn" data-username="user2">user2</button>
   </div>
 
   {{ form.text() }}
   {{ form.file() }}
-  {{ form.submit() }}a
+  {{ form.submit() }}
 </form>
 
 {% if username %}
@@ -125,6 +147,22 @@ textarea, input[type="file"], input[type="submit"] {
     <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded photo">
   </div>
 {% endif %}
+
+<script>
+const buttons = document.querySelectorAll('.username-btn');
+const hiddenUsername = document.querySelector('input[name="username"]');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Remove selection from all buttons
+    buttons.forEach(b => b.classList.remove('selected'));
+    // Add selection to clicked button
+    btn.classList.add('selected');
+    // Set hidden input value
+    hiddenUsername.value = btn.dataset.username;
+  });
+});
+</script>
 
   </div>
 </body>
