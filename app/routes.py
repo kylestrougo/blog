@@ -1,9 +1,10 @@
 from flask import render_template, redirect, url_for, request, flash
-from app import app
-from app.forms import LoginForm, PostForm
+from app import app, db
+from app.forms import PostForm
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
+from app.models import Post
 
 CORRECT_PASSWORD = "pass"
 
@@ -19,37 +20,19 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 @app.route('/index')
 def index():
-    # Example posts
-    posts = [
-        {"username": "Alice", "date": "August 31, 2025",
-         "text": "I found a tiny cafe this morning —\nthe light hit the counter just right.\nHot chocolate and a croissant,\nand somehow the world felt slower."},
-        {"username": "Ben", "date": "September 1, 2025",
-         "text": "Took the long route home tonight.\nThe city hums — fluorescent and alive.\nI sketched the idea for a tiny app:\na pocket notebook that actually listens."},
-        {"username": "Ben", "date": "September 2, 2025",
-         "text": "Took the long route home tonight.\nThe city hums — fluorescent and alive.\nI sketched the idea for a tiny app:\na pocket notebook that actually listens."}
-    ]
+    # Fetch posts from database ordered by most recent first
+    posts = Post.query.order_by(Post.created_at.desc()).all()
 
-    # Convert date strings to datetime objects for sorting
-    for post in posts:
-        post['date_obj'] = datetime.strptime(post['date'], "%B %d, %Y")
-
-    # Sort posts by date descending (most recent first)
-    posts.sort(key=lambda x: x['date_obj'], reverse=True)
-
-    # Remove the temporary datetime object (optional)
-    for post in posts:
-        del post['date_obj']
-
-    # Define colors per user
+    # Define colors per user (extend as needed)
     user_colors = {
-        "Alice": "#4B5320",  # Army Green
-        "Ben": "#4B0082"     # Dark Purple
+        "Dumbo": "#4B5320",  # Army Green
+        "Bug": "#4B0082"   # Dark Purple
     }
 
     return render_template('index.html', title='Home', posts=posts, user_colors=user_colors)
-
 @app.route('/')
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -65,31 +48,41 @@ def login():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     form = PostForm()
-    filename = None
-    post_data = None
 
     if request.method == 'POST':
-        selected_user = request.form.get('selected_user')  # user1 or user2
-        form.username.data = selected_user  # set hidden field
+        # Get username from hidden field
+        selected_user = form.username.data
 
         if form.validate_on_submit():
-            username = form.username.data
+            if not selected_user:
+                flash("Please select a username!", "danger")
+                return redirect(url_for('post'))
+
+            username = selected_user
             text = form.text.data
             file = form.file.data
-            from datetime import datetime
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            filename = None
 
+            # Handle optional file upload
             if file:
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            post_data = {
-                "username": username,
-                "text": text,
-                "filename": filename,
-                "date": current_time
-            }
+            # Save post to DB
+            new_post = Post(
+                username=username,
+                text=text,
+                image_path=filename,  # store only filename
+                created_at=datetime.utcnow()
+            )
+            db.session.add(new_post)
+            db.session.commit()
 
-            return render_template('post.html', form=form, **post_data)
+            #flash("Post successfully created!", "success")
+            return redirect(url_for('index'))
+        else:
+            flash("Error: " + str(form.errors), "danger")
 
-    return render_template('post.html', form=form)
+    # Query latest posts to display on page
+    posts = Post.query.order_by(Post.created_at.desc()).all()
+    return render_template('post.html', form=form, posts=posts)

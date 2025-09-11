@@ -1,152 +1,47 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Upload a Photo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Post</title>
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --line-height: clamp(28px, 3vw, 44px);
-  --margin-line: clamp(40px, 5vw, 80px);
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#e8eaf0;font-family:'Comic Neue',cursive;margin:0;}
-
-.notebook{
-  width:100%;
-  min-height:100vh;
-  background:
-    linear-gradient(90deg, transparent var(--margin-line),
-      rgba(255,98,98,0.15) calc(var(--margin-line) + 2px),
-      transparent calc(var(--margin-line) + 4px)),
-    repeating-linear-gradient(180deg, rgba(0,85,160,0.08),
-      rgba(0,85,160,0.08) 2px,
-      transparent 2px, transparent var(--line-height)),
-    #fdfdfc;
-  padding: clamp(20px,3vw,32px) clamp(16px,2vw,28px);
-  max-width: 600px;
-  margin:auto;
-}
-
-h1 {
-  font-size: 20px;
-  margin-bottom: 6px;
-  padding-left: calc(var(--margin-line) + 6px);
-}
-
-.back-button {
-  display: inline-block;
-  margin-bottom: 12px;
-  font-family: 'Comic Neue', cursive;
-  font-size: 20px;
-  text-decoration: none;
-  color: #ff6262;
-  padding-left: calc(var(--margin-line) + 6px);
-  transition: color 0.3s;
-}
-
-.back-button:hover {
-  color: #e05555;
-}
-
-form {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  padding-left: calc(var(--margin-line) + 6px);
-}
-
-textarea, input[type="file"], input[type="submit"], .username-btn {
-  font-family: 'Comic Neue', cursive;
-  font-size: 14px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border:1px solid #ccc;
-  cursor: pointer;
-}
-
-.username-btn {
-  background-color: #fff;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.username-btn.selected {
-  background-color: #ff6262;
-  color: #fff;
-}
-
-input[type="submit"] {
-  background-color: #ff6262;
-  color: #fff;
-  border: none;
-}
-
-input[type="submit"]:hover, .username-btn:hover {
-  background-color: #e05555;
-  color: #fff;
-}
-
-.uploaded-image {
-  margin-top: 16px;
-  padding-left: calc(var(--margin-line) + 6px);
-}
-
-.uploaded-image img {
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.handwritten-text {
-  font-size: 16px;
-  line-height: var(--line-height);
-  margin-top: 12px;
-  padding-left: calc(var(--margin-line) + 6px);
-  white-space: pre-wrap;
-}
-
-@media(max-width:768px){
-  .notebook { padding:20px 12px; }
-  h1 { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);}
-  .back-button { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);}
-  form { padding-left: calc(var(--margin-line) + 4px);}
-  textarea, input[type="file"], input[type="submit"], .username-btn { font-size:16px; padding:8px 12px;}
-}
+:root{ --line-height: clamp(28px, 3vw, 44px); --margin-line: clamp(40px, 5vw, 80px); } *{box-sizing:border-box;margin:0;padding:0} body{background:#e8eaf0;font-family:'Comic Neue',cursive;margin:0;} .notebook{ width:100%; min-height:100vh; background: linear-gradient(90deg, transparent var(--margin-line), rgba(255,98,98,0.15) calc(var(--margin-line) + 2px), transparent calc(var(--margin-line) + 4px)), repeating-linear-gradient(180deg, rgba(0,85,160,0.08), rgba(0,85,160,0.08) 2px, transparent 2px, transparent var(--line-height)), #fdfdfc; padding: clamp(20px,3vw,32px) clamp(16px,2vw,28px); max-width: 600px; margin:auto; } h1 { font-size: 20px; margin-bottom: 6px; padding-left: calc(var(--margin-line) + 6px); } .back-button { display: inline-block; margin-bottom: 12px; font-family: 'Comic Neue', cursive; font-size: 20px; text-decoration: none; color: #ff6262; padding-left: calc(var(--margin-line) + 6px); transition: color 0.3s; } .back-button:hover { color: #e05555; } form { display:flex; flex-direction:column; gap:12px; padding-left: calc(var(--margin-line) + 6px); } textarea, input[type="file"], input[type="submit"], .username-btn { font-family: 'Comic Neue', cursive; font-size: 14px; padding: 6px 10px; border-radius: 8px; border:1px solid #ccc; cursor: pointer; } .username-btn { background-color: #fff; transition: background-color 0.3s, color 0.3s; } .username-btn.selected { background-color: #ff6262; color: #fff; } input[type="submit"] { background-color: #ff6262; color: #fff; border: none; } input[type="submit"]:hover, .username-btn:hover { background-color: #e05555; color: #fff; } .uploaded-image { margin-top: 16px; padding-left: calc(var(--margin-line) + 6px); } .uploaded-image img { max-width: 100%; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); } .handwritten-text { font-size: 16px; line-height: var(--line-height); margin-top: 12px; padding-left: calc(var(--margin-line) + 6px); white-space: pre-wrap; } @media(max-width:768px){ .notebook { padding:20px 12px; } h1 { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} .back-button { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} form { padding-left: calc(var(--margin-line) + 4px);} textarea, input[type="file"], input[type="submit"], .username-btn { font-size:16px; padding:8px 12px;} }
+.username-btn.selected { background-color: #ff6262; color: #fff; }
+.flash-success { color: green; margin-bottom: 12px; }
+.flash-danger { color: red; margin-bottom: 12px; }
 </style>
 </head>
 <body>
-  <div class="notebook">
-        <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+<div class="notebook">
+  <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+  <h1>New Post</h1>
 
-    <h1>New Post</h1>
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="flash-{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
   <form method="post" enctype="multipart/form-data" id="postForm">
-  {{ form.hidden_tag() }}
+    {{ form.hidden_tag() }}
+    {{ form.username() }} <!-- hidden field for username -->
 
-  <div style="margin-bottom: 12px;">
-    <button type="button" class="username-btn" data-username="user1">user1</button>
-    <button type="button" class="username-btn" data-username="user2">user2</button>
-  </div>
+    <div style="margin-bottom: 12px;">
+      <button type="button" class="username-btn" data-username="Bug">Bug</button>
+      <button type="button" class="username-btn" data-username="Dumbo">Dumbo</button>
+    </div>
 
-  {{ form.text() }}
-  {{ form.file() }}
-  {{ form.submit() }}
-</form>
+    {{ form.text() }}<br><br>
+    {{ form.file() }}<br><br>
+    {{ form.submit() }}
+  </form>
 
-{% if username %}
-  <div class="handwritten-text">
-    <strong>{{ username }}</strong> — {{ date }}<br>
-    {{ text }}
-  </div>
-{% endif %}
-
-{% if filename %}
-  <div class="uploaded-image">
-    <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded photo">
-  </div>
-{% endif %}
 
 <script>
 const buttons = document.querySelectorAll('.username-btn');
@@ -154,16 +49,12 @@ const hiddenUsername = document.querySelector('input[name="username"]');
 
 buttons.forEach(btn => {
   btn.addEventListener('click', () => {
-    // Remove selection from all buttons
     buttons.forEach(b => b.classList.remove('selected'));
-    // Add selection to clicked button
     btn.classList.add('selected');
-    // Set hidden input value
     hiddenUsername.value = btn.dataset.username;
   });
 });
 </script>
-
-  </div>
 </body>
+
 </html>

@@ -138,7 +138,6 @@ body{
 </style>
 </head>
 <body>
-
 <div class="notebook">
   <!-- New post button centered horizontally -->
   <a href="{{ url_for('post') }}" class="new-post-btn">🖊️New Post</a>
@@ -148,18 +147,19 @@ body{
       {% if loop.first %}
         <div class="latest-label">Latest Post</div>
       {% endif %}
-      <div class="meta">{{ post.username }} — {{ post.date }}</div>
+      <div class="meta">{{ post.username }} — {{ post.created_at.strftime("%B %d, %Y") }}</div>
+      <p class="handwritten">{{ post.text }}</p>
 
-      {% if post.image %}
+      {% if post.image_path %}
         <div class="post-image">
-          <img src="{{ post.image }}" alt="Post image for {{ post.username }}">
+          <img src="{{ url_for('static', filename='uploads/' + post.image_path) }}" alt="Post image for {{ post.username }}">
         </div>
       {% endif %}
 
-      <p class="handwritten">{{ post.text }}</p>
     </article>
   {% endfor %}
 </div>
+
 
 </body>
 </html>
