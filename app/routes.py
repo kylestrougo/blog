@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from app.forms import PostForm
 from datetime import datetime
+import pytz
 import os
 from werkzeug.utils import secure_filename
 from app.models import Post
@@ -26,10 +27,18 @@ def index():
     # Fetch posts from database ordered by most recent first
     posts = Post.query.order_by(Post.created_at.desc()).all()
 
+    # Convert UTC timestamps to local time
+    local_tz = pytz.timezone('America/New_York')  # Replace with your timezone
+    for post in posts:
+        if post.created_at.tzinfo is None:
+            # If timestamp is naive (no timezone), assume it's UTC
+            post.created_at = pytz.utc.localize(post.created_at)
+        post.created_at = post.created_at.astimezone(local_tz)
+
     # Define colors per user (extend as needed)
     user_colors = {
         "Dumbo": "#4B5320",  # Army Green
-        "Bug": "#4B0082"   # Dark Purple
+        "Bug": "#4B0082"  # Dark Purple
     }
 
     return render_template('index.html', title='Home', posts=posts, user_colors=user_colors)

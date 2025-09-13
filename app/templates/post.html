@@ -6,15 +6,116 @@
 <title>New Post</title>
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{ --line-height: clamp(28px, 3vw, 44px); --margin-line: clamp(40px, 5vw, 80px); } *{box-sizing:border-box;margin:0;padding:0} body{background:#e8eaf0;font-family:'Comic Neue',cursive;margin:0;} .notebook{ width:100%; min-height:100vh; background: linear-gradient(90deg, transparent var(--margin-line), rgba(255,98,98,0.15) calc(var(--margin-line) + 2px), transparent calc(var(--margin-line) + 4px)), repeating-linear-gradient(180deg, rgba(0,85,160,0.08), rgba(0,85,160,0.08) 2px, transparent 2px, transparent var(--line-height)), #fdfdfc; padding: clamp(20px,3vw,32px) clamp(16px,2vw,28px); max-width: 600px; margin:auto; } h1 { font-size: 20px; margin-bottom: 6px; padding-left: calc(var(--margin-line) + 6px); } .back-button { display: inline-block; margin-bottom: 12px; font-family: 'Comic Neue', cursive; font-size: 20px; text-decoration: none; color: #ff6262; padding-left: calc(var(--margin-line) + 6px); transition: color 0.3s; } .back-button:hover { color: #e05555; } form { display:flex; flex-direction:column; gap:12px; padding-left: calc(var(--margin-line) + 6px); } textarea, input[type="file"], input[type="submit"], .username-btn { font-family: 'Comic Neue', cursive; font-size: 14px; padding: 6px 10px; border-radius: 8px; border:1px solid #ccc; cursor: pointer; } .username-btn { background-color: #fff; transition: background-color 0.3s, color 0.3s; } .username-btn.selected { background-color: #ff6262; color: #fff; } input[type="submit"] { background-color: #ff6262; color: #fff; border: none; } input[type="submit"]:hover, .username-btn:hover { background-color: #e05555; color: #fff; } .uploaded-image { margin-top: 16px; padding-left: calc(var(--margin-line) + 6px); } .uploaded-image img { max-width: 100%; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); } .handwritten-text { font-size: 16px; line-height: var(--line-height); margin-top: 12px; padding-left: calc(var(--margin-line) + 6px); white-space: pre-wrap; } @media(max-width:768px){ .notebook { padding:20px 12px; } h1 { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} .back-button { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} form { padding-left: calc(var(--margin-line) + 4px);} textarea, input[type="file"], input[type="submit"], .username-btn { font-size:16px; padding:8px 12px;} }
-.username-btn.selected { background-color: #ff6262; color: #fff; }
+:root{ --line-height: clamp(28px, 3vw, 44px); --margin-line: clamp(40px, 5vw, 80px); } *{box-sizing:border-box;margin:0;padding:0} body{background:#e8eaf0;font-family:'Comic Neue',cursive;margin:0;} .notebook{ width:100%; min-height:100vh; background: linear-gradient(90deg, transparent var(--margin-line), rgba(255,98,98,0.15) calc(var(--margin-line) + 2px), transparent calc(var(--margin-line) + 4px)), repeating-linear-gradient(180deg, rgba(0,85,160,0.08), rgba(0,85,160,0.08) 2px, transparent 2px, transparent var(--line-height)), #fdfdfc; padding: clamp(20px,3vw,32px) clamp(16px,2vw,28px); max-width: 600px; margin:auto; } h1 { font-size: 20px; margin-bottom: 6px; padding-left: calc(var(--margin-line) + 6px); } .back-button {
+  display: inline-block;
+  position: relative;
+  padding: 10px 24px;
+  font-family: 'Comic Neue', cursive;
+  font-size: 20px;
+  color: #000;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: calc(var(--margin-line) + 6px);
+  z-index: 1;
+  transition: color 0.2s ease;
+}
+
+.back-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(var(--margin-line) + 6px);
+  width: calc(100% - var(--margin-line) - 6px);
+  height: 70%;
+  background: #fffd75;
+  z-index: -1;
+  transform: translate(0, -50%) rotate(-2deg);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  color: #ff6262;
+}
+
+.back-button:hover::before {
+  background: #fff176;
+  transform: translate(0, -50%) rotate(1deg);
+}
+
+form { display:flex; flex-direction:column; gap:12px; padding-left: calc(var(--margin-line) + 6px); } textarea, input[type="file"] { font-family: 'Comic Neue', cursive; font-size: 14px; padding: 6px 10px; border-radius: 8px; border:1px solid #ccc; cursor: pointer; }
+
+.username-btn {
+  position: relative;
+  padding: 10px 24px;
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: #000;
+  background: #fffd75;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 1;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: rotate(-1deg);
+  margin-right: 8px;
+}
+
+.username-btn:hover {
+  color: #ff6262;
+  background: #fff176;
+  transform: rotate(1deg);
+}
+
+.username-btn.selected {
+  background: #ff6262;
+  color: #fff;
+  transform: rotate(2deg);
+}
+
+.username-btn.selected:hover {
+  background: #e05555;
+  color: #fff;
+}
+
+input[type="submit"] {
+  position: relative;
+  padding: 10px 24px;
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: #000;
+  background: #fffd75;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 1;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: rotate(-2deg);
+}
+
+input[type="submit"]:hover {
+  color: #ff6262;
+  background: #fff176;
+  transform: rotate(1deg);
+}
+
+.uploaded-image { margin-top: 16px; padding-left: calc(var(--margin-line) + 6px); } .uploaded-image img { max-width: 100%; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); } .handwritten-text { font-size: 16px; line-height: var(--line-height); margin-top: 12px; padding-left: calc(var(--margin-line) + 6px); white-space: pre-wrap; } @media(max-width:768px){ .notebook { padding:20px 12px; } h1 { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} .back-button { font-size: 22px; padding-left: calc(var(--margin-line) + 4px);} .back-button::before { left: calc(var(--margin-line) + 4px); width: calc(100% - var(--margin-line) - 4px); } form { padding-left: calc(var(--margin-line) + 4px);} textarea, input[type="file"], input[type="submit"], .username-btn { font-size:16px; padding:8px 12px;} }
 .flash-success { color: green; margin-bottom: 12px; }
 .flash-danger { color: red; margin-bottom: 12px; }
 </style>
 </head>
 <body>
 <div class="notebook">
-  <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+  <a href="{{ url_for('index') }}" class="back-button">← Back to Letters</a>
   <h1>New Post</h1>
 
   <!-- Flash messages -->
@@ -37,8 +138,8 @@
       <button type="button" class="username-btn" data-username="Dumbo">Dumbo</button>
     </div>
 
-    {{ form.text() }}<br><br>
-    {{ form.file() }}<br><br>
+    {{ form.text() }}
+    {{ form.file() }}
     {{ form.submit() }}
   </form>
 

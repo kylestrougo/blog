@@ -20,6 +20,7 @@ body{
 }
 
 .notebook{
+  position: relative; /* ✅ now doodles anchor to notebook */
   width:100%;
   min-height:100vh;
   background:
@@ -35,28 +36,69 @@ body{
   margin: auto;
 }
 
-/* Center the button horizontally */
-.new-post-btn {
-  display: block;               /* block + margin auto = horizontal center */
-  width: fit-content;           /* shrink to text width */
-  padding: 10px 24px;
-  font-family: 'Comic Neue', cursive;
-  font-size: 16px;
-  color: #555;
-  background-color: #fff;
-  border: 2px solid #ccc;
-  border-radius: 50px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.2s ease;
-  margin: 0 auto 24px auto;     /* horizontal center + bottom spacing */
+/* Doodle images */
+.doodle-planet {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 70px;
+  opacity: 0.8;
+  filter: drop-shadow(1px 1px 0 #00000020);
+  pointer-events: none;
+  transform: rotate(-5deg); /* slight tilt for hand-drawn look */
 }
 
+.doodle-mtns {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 100px;
+  opacity: 0.85;
+  filter: drop-shadow(1px 1px 0 #00000020);
+  pointer-events: none;
+  transform: rotate(5deg); /* slight opposite tilt */
+}
+
+.new-post-btn {
+  display: block;
+  position: relative;
+  padding: 10px 24px;
+  font-family: 'Comic Neue', cursive;
+  font-size: clamp(14px, 2vw, 22px);
+  color: #000;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto 24px auto;
+  text-decoration: none;
+  font-weight: bold;
+  width: fit-content;
+  z-index: 1;
+}
+
+.new-post-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 70%;
+  background: #fffd75; /* yellow highlighter */
+  z-index: -1;
+  transform: translate(-50%, -50%) rotate(-2deg);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+/* Hover effect: change highlight + text color */
 .new-post-btn:hover {
-  background-color: #f5f5f5;
-  border-color: #ff6262;
   color: #ff6262;
+}
+
+.new-post-btn:hover::before {
+  background: #fff176;
+  transform: translate(-50%, -50%) rotate(1deg);
 }
 
 .post {
@@ -84,9 +126,22 @@ body{
 }
 
 .meta {
-  font-size: clamp(16px, 2.5vw, 24px);
   margin-bottom: 6px;
+}
+
+.username {
+  font-size: clamp(16px, 2.5vw, 24px);
   font-weight: bold;
+}
+
+.datetime {
+  font-size: clamp(12px, 2vw, 18px);
+  font-weight: normal;
+  margin-top: 2px;
+}
+
+/* Date time formatting */
+.date-time {
 }
 
 .handwritten {
@@ -113,16 +168,20 @@ body{
 
 /* Dynamic user colors from Flask/Jinja */
 {% for user, color in user_colors.items() %}
-.user-{{ user|lower }} .meta,
-.user-{{ user|lower }} .handwritten{
+.user-{{ user|lower }} .username,
+.user-{{ user|lower }} .datetime,
+.user-{{ user|lower }} .handwritten {
   color: {{ color }};
 }
 {% endfor %}
 
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
-  .meta {
+  .username {
     font-size: clamp(18px, 3vw, 26px);
+  }
+  .datetime {
+    font-size: clamp(14px, 2.5vw, 20px);
   }
   .handwritten {
     font-size: clamp(16px, 2.5vw, 24px);
@@ -131,14 +190,25 @@ body{
     padding: clamp(24px, 4vw, 36px) clamp(18px, 3vw, 30px);
   }
   .new-post-btn {
-    font-size: 18px;
+    font-size: clamp(16px, 2.5vw, 24px);
     padding: 14px 24px;
+  }
+
+  /* ✅ Planet moves to right on mobile */
+  .doodle-planet {
+    left: auto;
+    right: 280px;
+    top: 12px;
   }
 }
 </style>
 </head>
 <body>
 <div class="notebook">
+  <!-- Doodles INSIDE notebook -->
+  <img src="{{ url_for('static', filename='planet.png') }}" alt="doodle planet" class="doodle-planet">
+  <img src="{{ url_for('static', filename='mtns.png') }}" alt="doodle mountains" class="doodle-mtns">
+
   <!-- New post button centered horizontally -->
   <a href="{{ url_for('post') }}" class="new-post-btn">🖊️New Post</a>
 
@@ -147,7 +217,9 @@ body{
       {% if loop.first %}
         <div class="latest-label">Latest Post</div>
       {% endif %}
-      <div class="meta">{{ post.username }} — {{ post.created_at.strftime("%B %d, %Y") }}</div>
+      <div class="meta">
+        <div class="username">{{ post.username }}</div>
+<div class="datetime"><span class="date-time">{{ post.created_at.strftime("%B %d, %Y at %-I:%M%p").title().replace('At', 'at').replace('Am', 'am').replace('Pm', 'pm') }}</span></div>      </div>
       <p class="handwritten">{{ post.text }}</p>
 
       {% if post.image_path %}
@@ -155,11 +227,8 @@ body{
           <img src="{{ url_for('static', filename='uploads/' + post.image_path) }}" alt="Post image for {{ post.username }}">
         </div>
       {% endif %}
-
     </article>
   {% endfor %}
 </div>
-
-
 </body>
 </html>
