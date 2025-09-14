@@ -1,13 +1,8 @@
-from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from app.forms import PostForm
-from datetime import datetime
 import pytz
-import os
-from werkzeug.utils import secure_filename
 from app.models import Post
 import smtplib
-from email.mime.text import MIMEText
 from flask import Flask, render_template, redirect, url_for, flash, request
 from werkzeug.utils import secure_filename
 from datetime import datetime
