@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>New Letter</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td align="center">
+
+          <!-- Envelope Container -->
+          <table role="presentation" border="0" cellpadding="20" cellspacing="0"
+                 style="max-width: 600px; width: 100%; background: #fff;
+                        border: 2px solid #e0e0e0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <tr>
+              <td align="center" style="padding: 30px;">
+
+                <!-- Envelope Header -->
+                <h2 style="margin-top: 0; color: #333;">📬 You have a new letter from {{ username }}</h2>
+
+
+                <!-- Button -->
+                <a href="{{ site_link }}"
+                   style="display: inline-block; padding: 12px 25px; background-color: #007BFF;
+                          color: #fff; text-decoration: none; border-radius: 5px; font-size: 16px;
+                          font-weight: bold;">
+                  ✉️  Open Letter
+                </a>
+
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

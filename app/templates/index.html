@@ -41,7 +41,7 @@ body{
   position: absolute;
   top: 12px;
   left: 12px;
-  width: 70px;
+  width: 95px;
   opacity: 0.8;
   filter: drop-shadow(1px 1px 0 #00000020);
   pointer-events: none;
@@ -210,12 +210,12 @@ body{
   <img src="{{ url_for('static', filename='mtns.png') }}" alt="doodle mountains" class="doodle-mtns">
 
   <!-- New post button centered horizontally -->
-  <a href="{{ url_for('post') }}" class="new-post-btn">🖊️New Post</a>
+  <a href="{{ url_for('post') }}" class="new-post-btn">🖊️ New Letter</a>
 
   {% for post in posts %}
     <article class="post user-{{ post.username|lower }} {% if loop.first %}latest-post{% endif %}">
       {% if loop.first %}
-        <div class="latest-label">Latest Post</div>
+        <div class="latest-label">New</div>
       {% endif %}
       <div class="meta">
         <div class="username">{{ post.username }}</div>

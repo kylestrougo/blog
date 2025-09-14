@@ -6,8 +6,16 @@ import pytz
 import os
 from werkzeug.utils import secure_filename
 from app.models import Post
+import smtplib
+from email.mime.text import MIMEText
+from flask import Flask, render_template, redirect, url_for, flash, request
+from werkzeug.utils import secure_filename
+from datetime import datetime
+import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-CORRECT_PASSWORD = "pass"
+CORRECT_PASSWORD = "WIZARD"
 
 # Configurations
 UPLOAD_FOLDER = 'app/static/uploads'   # folder where files will be saved
@@ -16,6 +24,28 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Make sure upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def send_email(to_email, subject, body_html):
+    sender = "chi.chi.masters1@gmail.com"
+    password = "qxdl tort frwr odkr"
+
+    # Multipart so we can support both plain text + HTML
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = sender
+    msg["To"] = to_email
+
+    # Add both plain text fallback and HTML
+    text_fallback = "Your email client does not support HTML emails."
+    part1 = MIMEText(text_fallback, "plain")
+    part2 = MIMEText(body_html, "html")
+
+    msg.attach(part1)
+    msg.attach(part2)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(sender, password)
+        server.sendmail(sender, to_email, msg.as_string())
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -47,19 +77,20 @@ def index():
 def login():
     if request.method == "POST":
         password = request.form.get("password")
-        if password == CORRECT_PASSWORD:
+        if password.upper() == CORRECT_PASSWORD:
             return redirect(url_for("index"))
         else:
             flash("Enter the correct password")
             return redirect(url_for("login"))
     return render_template("login.html")
 
+
+# --- ROUTE ---
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     form = PostForm()
 
     if request.method == 'POST':
-        # Get username from hidden field
         selected_user = form.username.data
 
         if form.validate_on_submit():
@@ -81,17 +112,25 @@ def post():
             new_post = Post(
                 username=username,
                 text=text,
-                image_path=filename,  # store only filename
+                image_path=filename,
                 created_at=datetime.utcnow()
             )
             db.session.add(new_post)
             db.session.commit()
 
-            #flash("Post successfully created!", "success")
+            # --- Render email from template ---
+            site_link = "http://192.168.1.117:5000/"
+            email_html = render_template("email.html", username=username, text=text, site_link=site_link)
+
+            # --- Send to correct recipient ---
+            if username == "Bug":
+                send_email("kstrougo@gmail.com", f"New letter from {username}", email_html)
+            elif username == "Dumbo":
+                send_email("chichi.masters1@gmail.com", f"New letter from {username}", email_html)
+
             return redirect(url_for('index'))
         else:
             flash("Error: " + str(form.errors), "danger")
 
-    # Query latest posts to display on page
     posts = Post.query.order_by(Post.created_at.desc()).all()
     return render_template('post.html', form=form, posts=posts)
